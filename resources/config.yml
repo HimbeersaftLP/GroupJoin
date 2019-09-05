@@ -1,0 +1,13 @@
+# GroupJoin config
+
+# Hides the join message for all groups not set in this file
+hide-other: false
+
+# Messages per group
+groups:
+  Admin:
+    join: "The admin {player} joined the server."
+    leave: "The admin {player} left the server."
+  Owner:
+    join: "The owner {player} joined the server. Pay attention!"
+    leave: "The owner {player} left the server."
