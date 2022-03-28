@@ -5,5 +5,6 @@ api: 4.0.0
 author: Himbeer
 website: himbeer.me
 description: Get notified when a player from a specific PurePerms group joins.
-depend:
+softdepend:
   - PurePerms
+  - GroupsAPI

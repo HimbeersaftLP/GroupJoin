@@ -5,45 +5,49 @@ declare(strict_types=1);
 namespace Himbeer\GroupJoin;
 
 use _64FF00\PurePerms\PurePerms;
-use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerJoinEvent;
-use pocketmine\event\player\PlayerQuitEvent;
+use alvin0319\GroupsAPI\GroupsAPI;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
+use pocketmine\promise\Promise;
 
-class Main extends PluginBase implements Listener {
+class Main extends PluginBase {
 
 	/** @var bool */
-	private $hideOther;
+	public $hideOther;
 
 	/** @var string[][] */
 	private $messages;
 
-	/** @var PurePerms */
-	private $purePerms;
-
-	public function onEnable(): void {
+	public function onEnable() : void {
 		$this->saveDefaultConfig();
-		$this->hideOther = (bool)$this->getConfig()->get("hide-other");
+		$this->hideOther = (bool) $this->getConfig()->get("hide-other");
 		$this->messages = $this->getConfig()->get("groups");
 
-		$this->purePerms = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
+		/**
+		 * @var PurePerms $purePerms
+		 */
+		$purePerms = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
+		/**
+		 * @var GroupsAPI $groupsAPI
+		 */
+		$groupsAPI = $this->getServer()->getPluginManager()->getPlugin("GroupsAPI");
 
-		$this->getServer()->getPluginManager()->registerEvents($this, $this);
-	}
-
-	private function getGroupNameForPlayer(Player $player): string {
-		$ppGroup = $this->purePerms->getUserDataMgr()->getGroup($player);
-		if ($ppGroup === null) {
-			// This should never happen, if it does, the server owner messed up their PurePerms config
-			// We don't need to log this, PurePerms does that already
-			return "";
+		if ($purePerms !== null && $groupsAPI !== null) {
+			$this->getLogger()->error("Both PurePerms and GroupsAPI are installed. You will need either one (but not both at the same time) for this plugin to work!");
+		} else if ($purePerms !== null) {
+			$this->getServer()->getPluginManager()->registerEvents(new PurePermsListener($this, $purePerms), $this);
+		} else if ($groupsAPI !== null) {
+			$this->getServer()->getPluginManager()->registerEvents(new GroupsAPIListener($this, $groupsAPI), $this);
+		} else {
+			$this->getLogger()->error("Neither PurePerms nor GroupsAPI are installed. You will need either one (but not both at the same time) for this plugin to work!");
 		}
-		return $ppGroup->getName();
 	}
 
-	private function getMessageForPlayer(Player $player, string $type): ?string {
-		$groupName = $this->getGroupNameForPlayer($player);
+	private static function doStringReplacement(string $str, string $playerName) : string {
+		return str_replace("{player}", $playerName, $str);
+	}
+
+	public function getMessageForGroupName(string $groupName, string $type, string $playerName) : ?string {
 		if (!isset($this->messages[$groupName])) {
 			return null;
 		}
@@ -51,24 +55,19 @@ class Main extends PluginBase implements Listener {
 		if (!isset($messages[$type])) {
 			return null;
 		}
-		return str_replace("{player}", $player->getName(), $messages[$type]);
+		return self::doStringReplacement($messages[$type], $playerName);
 	}
 
-	public function onJoin(PlayerJoinEvent $event) {
-		$message = $this->getMessageForPlayer($event->getPlayer(), "join");
-		if ($message) {
-			$event->setJoinMessage($message);
-		} else if ($this->hideOther) {
-			$event->setJoinMessage("");
+	public function getMessageForGroupNames(array $groupNames, string $type, string $playerName) : ?string {
+		foreach ($this->messages as $msgGroupName => $messages) {
+			foreach ($groupNames as $groupName) {
+				if ($msgGroupName === $groupName) {
+					if (isset($messages[$type])) {
+						return self::doStringReplacement($messages[$type], $playerName);
+					}
+				}
+			}
 		}
-	}
-
-	public function onQuit(PlayerQuitEvent $event) {
-		$message = $this->getMessageForPlayer($event->getPlayer(), "leave");
-		if ($message) {
-			$event->setQuitMessage($message);
-		} else if ($this->hideOther) {
-			$event->setQuitMessage("");
-		}
+		return null;
 	}
 }
