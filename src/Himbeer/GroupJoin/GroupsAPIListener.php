@@ -14,11 +14,9 @@ use pocketmine\player\Player;
 use pocketmine\promise\Promise;
 
 class GroupsAPIListener implements Listener {
-	/** @var Main */
-	private $plugin;
+	private Main $plugin;
 
-	/** @var GroupsAPI */
-	private $groupsAPI;
+	private GroupsAPI $groupsAPI;
 
 	public function __construct(Main $plugin, GroupsAPI $groupsAPI) {
 		$this->plugin = $plugin;
@@ -51,12 +49,10 @@ class GroupsAPIListener implements Listener {
 			}, function() use ($callback) : void {
 				$callback([]);
 			});
-		} else {
-			$callback([]);
 		}
 	}
 
-	private function getAndSendGroupsAPIMessageForPlayer(Player $player, string $type, $originalMessage) : ?string {
+	private function getAndSendGroupsAPIMessageForPlayer(Player $player, string $type, $originalMessage) : void {
 		$this->getGroupsAPIGroupNamesForPlayer($player, function(array $groupNames) use ($type, $originalMessage, $player) {
 			if (count($groupNames) === 0) {
 				$this->plugin->getServer()->broadcastMessage($originalMessage);
@@ -71,7 +67,6 @@ class GroupsAPIListener implements Listener {
 				}
 			}
 		});
-		return "";
 	}
 
 	public function onJoinGroupsAPI(PlayerJoinEvent $event) {

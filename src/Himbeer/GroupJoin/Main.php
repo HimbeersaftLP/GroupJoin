@@ -6,17 +6,13 @@ namespace Himbeer\GroupJoin;
 
 use _64FF00\PurePerms\PurePerms;
 use alvin0319\GroupsAPI\GroupsAPI;
-use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
-use pocketmine\promise\Promise;
 
 class Main extends PluginBase {
-
-	/** @var bool */
-	public $hideOther;
+	public bool $hideOther;
 
 	/** @var string[][] */
-	private $messages;
+	private array $messages;
 
 	public function onEnable() : void {
 		$this->saveDefaultConfig();

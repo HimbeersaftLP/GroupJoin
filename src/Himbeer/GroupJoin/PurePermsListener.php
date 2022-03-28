@@ -11,11 +11,9 @@ use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\player\Player;
 
 class PurePermsListener implements Listener {
-	/** @var Main */
-	private $plugin;
+	private Main $plugin;
 
-	/** @var PurePerms */
-	private $purePerms;
+	private PurePerms $purePerms;
 
 	public function __construct(Main $plugin, PurePerms $purePerms) {
 		$this->plugin = $plugin;
@@ -34,8 +32,7 @@ class PurePermsListener implements Listener {
 
 	private function getPurePermsMessageForPlayer(Player $player, string $type) : ?string {
 		$groupName = $this->getPurePermsGroupNameForPlayer($player);
-		$msg = $this->plugin->getMessageForGroupName($groupName, $type, $player->getName());
-		return $msg;
+		return $this->plugin->getMessageForGroupName($groupName, $type, $player->getName());
 	}
 
 	public function onJoinPurePerms(PlayerJoinEvent $event) {
