@@ -22,15 +22,15 @@ class Main extends PluginBase {
 		$this->messages = $this->getConfig()->get("groups");
 
 		/**
-		 * @var PurePerms $purePerms
+		 * @var PurePerms|null $purePerms
 		 */
 		$purePerms = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
 		/**
-		 * @var GroupsAPI $groupsAPI
+		 * @var GroupsAPI|null $groupsAPI
 		 */
 		$groupsAPI = $this->getServer()->getPluginManager()->getPlugin("GroupsAPI");
 		/**
-		 * @var GroupSystem $groupSystem
+		 * @var GroupSystem|null $groupSystem
 		 */
 		$groupSystem = $this->getServer()->getPluginManager()->getPlugin("GroupSystem");
 
