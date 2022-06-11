@@ -8,3 +8,4 @@ description: Get notified when a player from a specific PurePerms group joins.
 softdepend:
   - PurePerms
   - GroupsAPI
+  - GroupSystem
