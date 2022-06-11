@@ -8,6 +8,7 @@ use _64FF00\PurePerms\PurePerms;
 use alvin0319\GroupsAPI\GroupsAPI;
 use pocketmine\plugin\DisablePluginException;
 use pocketmine\plugin\PluginBase;
+use pocketmine\utils\VersionString;
 use r3pt1s\GroupSystem\GroupSystem;
 
 class Main extends PluginBase {
@@ -39,13 +40,18 @@ class Main extends PluginBase {
 		});
 
 		if (count($installed_plugins) > 1) {
-			var_dump($installed_plugins);
 			$this->getLogger()->error("Two or more of PurePerms, GroupsAPI and GroupSystem are installed. You will need one of them (but not multiple at the same time) for this plugin to work!");
 			throw new DisablePluginException();
 		} else if ($purePerms !== null) {
 			$this->getServer()->getPluginManager()->registerEvents(new PurePermsListener($this, $purePerms), $this);
 		} else if ($groupsAPI !== null) {
-			$this->getServer()->getPluginManager()->registerEvents(new GroupsAPIListener($this, $groupsAPI), $this);
+			$groupsAPIVer = new VersionString($groupsAPI->getDescription()->getVersion());
+			if ($groupsAPIVer->getMajor() >= 2) {
+				$this->getServer()->getPluginManager()->registerEvents(new GroupsAPIListener($this, $groupsAPI), $this);
+			} else {
+				$this->getLogger()->error("GroupsAPI version must be 2.0.0 or higher!");
+				throw new DisablePluginException();
+			}
 		} else if ($groupSystem !== null) {
 			$this->getServer()->getPluginManager()->registerEvents(new GroupSystemListener($this, $groupSystem), $this);
 		} else {
