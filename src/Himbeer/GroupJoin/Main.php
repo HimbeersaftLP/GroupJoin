@@ -6,7 +6,9 @@ namespace Himbeer\GroupJoin;
 
 use _64FF00\PurePerms\PurePerms;
 use alvin0319\GroupsAPI\GroupsAPI;
+use pocketmine\plugin\DisablePluginException;
 use pocketmine\plugin\PluginBase;
+use r3pt1s\GroupSystem\GroupSystem;
 
 class Main extends PluginBase {
 	public bool $hideOther;
@@ -27,15 +29,28 @@ class Main extends PluginBase {
 		 * @var GroupsAPI $groupsAPI
 		 */
 		$groupsAPI = $this->getServer()->getPluginManager()->getPlugin("GroupsAPI");
+		/**
+		 * @var GroupSystem $groupSystem
+		 */
+		$groupSystem = $this->getServer()->getPluginManager()->getPlugin("GroupSystem");
 
-		if ($purePerms !== null && $groupsAPI !== null) {
-			$this->getLogger()->error("Both PurePerms and GroupsAPI are installed. You will need either one (but not both at the same time) for this plugin to work!");
+		$installed_plugins = array_filter([$purePerms, $groupsAPI, $groupSystem], function($p) {
+			return $p !== null;
+		});
+
+		if (count($installed_plugins) > 1) {
+			var_dump($installed_plugins);
+			$this->getLogger()->error("Two or more of PurePerms, GroupsAPI and GroupSystem are installed. You will need one of them (but not multiple at the same time) for this plugin to work!");
+			throw new DisablePluginException();
 		} else if ($purePerms !== null) {
 			$this->getServer()->getPluginManager()->registerEvents(new PurePermsListener($this, $purePerms), $this);
 		} else if ($groupsAPI !== null) {
 			$this->getServer()->getPluginManager()->registerEvents(new GroupsAPIListener($this, $groupsAPI), $this);
+		} else if ($groupSystem !== null) {
+			$this->getServer()->getPluginManager()->registerEvents(new GroupSystemListener($this, $groupSystem), $this);
 		} else {
-			$this->getLogger()->error("Neither PurePerms nor GroupsAPI are installed. You will need either one (but not both at the same time) for this plugin to work!");
+			$this->getLogger()->error("Neither PurePerms, nor GroupsAPI, nor GroupSystem are installed. You will need one of them (but not multiple at the same time) for this plugin to work!");
+			throw new DisablePluginException();
 		}
 	}
 

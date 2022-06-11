@@ -28,7 +28,7 @@ class GroupsAPIListener implements Listener {
 	 *
 	 * @return string[]
 	 */
-	private static function getGroupsAPIMemberGroupNames(Member $member) : array {
+	private static function getMemberGroupNames(Member $member) : array {
 		return array_map(function(GroupWrapper $groupWrapper) {
 			return $groupWrapper->getGroup()->getName();
 		}, $member->getGroups()
@@ -39,21 +39,21 @@ class GroupsAPIListener implements Listener {
 	 * @param Player   $player
 	 * @param callable $callback Callback with the group names in an array as the first parameter
 	 */
-	private function getGroupsAPIGroupNamesForPlayer(Player $player, callable $callback) : void {
+	private function getGroupNamesForPlayer(Player $player, callable $callback) : void {
 		$member = $this->groupsAPI->getMemberManager()->loadMember($player->getName());
 		if ($member instanceof Member) {
-			$callback(self::getGroupsAPIMemberGroupNames($member));
+			$callback(self::getMemberGroupNames($member));
 		} else if ($member instanceof Promise) {
 			$member->onCompletion(function(Member $member) use ($callback) : void {
-				$callback(self::getGroupsAPIMemberGroupNames($member));
+				$callback(self::getMemberGroupNames($member));
 			}, function() use ($callback) : void {
 				$callback([]);
 			});
 		}
 	}
 
-	private function getAndSendGroupsAPIMessageForPlayer(Player $player, string $type, $originalMessage) : void {
-		$this->getGroupsAPIGroupNamesForPlayer($player, function(array $groupNames) use ($type, $originalMessage, $player) {
+	private function getAndSendMessageForPlayer(Player $player, string $type, $originalMessage) : void {
+		$this->getGroupNamesForPlayer($player, function(array $groupNames) use ($type, $originalMessage, $player) {
 			if (count($groupNames) === 0) {
 				$this->plugin->getServer()->broadcastMessage($originalMessage);
 			} else {
@@ -69,13 +69,13 @@ class GroupsAPIListener implements Listener {
 		});
 	}
 
-	public function onJoinGroupsAPI(PlayerJoinEvent $event) {
-		$this->getAndSendGroupsAPIMessageForPlayer($event->getPlayer(), "join", $event->getJoinMessage());
+	public function onJoin(PlayerJoinEvent $event) {
+		$this->getAndSendMessageForPlayer($event->getPlayer(), "join", $event->getJoinMessage());
 		$event->setJoinMessage("");
 	}
 
-	public function onQuitGroupsAPI(PlayerQuitEvent $event) {
-		$this->getAndSendGroupsAPIMessageForPlayer($event->getPlayer(), "leave", $event->getQuitMessage());
+	public function onQuit(PlayerQuitEvent $event) {
+		$this->getAndSendMessageForPlayer($event->getPlayer(), "leave", $event->getQuitMessage());
 		$event->setQuitMessage("");
 	}
 }

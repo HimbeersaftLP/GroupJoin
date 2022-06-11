@@ -4,30 +4,24 @@ declare(strict_types=1);
 
 namespace Himbeer\GroupJoin;
 
-use _64FF00\PurePerms\PurePerms;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\player\Player;
+use r3pt1s\GroupSystem\GroupSystem;
 
-class PurePermsListener implements Listener {
+class GroupSystemListener implements Listener {
 	private Main $plugin;
 
-	private PurePerms $purePerms;
+	private GroupSystem $groupSystem;
 
-	public function __construct(Main $plugin, PurePerms $purePerms) {
+	public function __construct(Main $plugin, GroupSystem $groupSystem) {
 		$this->plugin = $plugin;
-		$this->purePerms = $purePerms;
+		$this->groupSystem = $groupSystem;
 	}
 
 	private function getGroupNameForPlayer(Player $player) : string {
-		$ppGroup = $this->purePerms->getUserDataMgr()->getGroup($player);
-		if ($ppGroup === null) {
-			// This should never happen, if it does, the server owner messed up their PurePerms config
-			// We don't need to log this, PurePerms does that already
-			return "";
-		}
-		return $ppGroup->getName();
+		return $this->groupSystem->getPlayerGroupManager()->getGroup($player->getName())->getGroup()->getName();
 	}
 
 	private function getMessageForPlayer(Player $player, string $type) : ?string {
