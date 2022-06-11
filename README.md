@@ -4,7 +4,7 @@
 
 ## Description
 
-Get notified when a player from a specific PurePerms group joins.
+Get notified when a player from a specific [PurePerms](https://poggit.pmmp.io/p/PurePerms/), [GroupsAPI](https://poggit.pmmp.io/p/GroupsAPI/) or [GroupSystem](https://poggit.pmmp.io/p/GroupSystem/) group joins.
 
 ## Usage
 

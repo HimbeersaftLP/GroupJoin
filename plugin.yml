@@ -1,6 +1,6 @@
 name: GroupJoin
 main: Himbeer\GroupJoin\Main
-version: 1.0.0
+version: 1.1.0
 api: 4.0.0
 author: Himbeer
 website: himbeer.me
