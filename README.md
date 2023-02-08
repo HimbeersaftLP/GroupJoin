@@ -2,10 +2,18 @@
 
 [![Poggit CI Status](https://poggit.pmmp.io/ci.shield/HimbeersaftLP/GroupJoin/GroupJoin)](https://poggit.pmmp.io/ci/HimbeersaftLP/GroupJoin/GroupJoin)
 [![Poggit Release Status](https://poggit.pmmp.io/shield.state/GroupJoin)](https://poggit.pmmp.io/p/GroupJoin)
+[![Join the Discord Server](https://img.shields.io/discord/252874887113342976?logo=discord)](https://www.himbeer.me/discord)
 
 ## Description
 
-Get notified when a player from a specific [PurePerms](https://poggit.pmmp.io/p/PurePerms/), [GroupsAPI](https://poggit.pmmp.io/p/GroupsAPI/) or [GroupSystem](https://poggit.pmmp.io/p/GroupSystem/) group joins.
+A [PocketMine-MP](https://github.com/pmmp/PocketMine-MP) plugin that notifies all players when a player from a specific group joins.
+
+### Supported Plugins
+
+- [PurePerms](https://poggit.pmmp.io/p/PurePerms/)
+- [GroupsAPI](https://poggit.pmmp.io/p/GroupsAPI/)
+- [GroupSystem](https://poggit.pmmp.io/p/GroupSystem/)
+- [RankSystem](https://poggit.pmmp.io/p/RankSystem/)
 
 ## Usage
 
