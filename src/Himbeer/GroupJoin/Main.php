@@ -6,6 +6,7 @@ namespace Himbeer\GroupJoin;
 
 use _64FF00\PurePerms\PurePerms;
 use alvin0319\GroupsAPI\GroupsAPI;
+use IvanCraft623\RankSystem\RankSystem;
 use pocketmine\plugin\DisablePluginException;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\VersionString;
@@ -34,13 +35,17 @@ class Main extends PluginBase {
 		 * @var GroupSystem|null $groupSystem
 		 */
 		$groupSystem = $this->getServer()->getPluginManager()->getPlugin("GroupSystem");
+		/**
+		 * @var RankSystem|null $rankSystem
+		 */
+		$rankSystem = $this->getServer()->getPluginManager()->getPlugin("RankSystem");
 
-		$installed_plugins = array_filter([$purePerms, $groupsAPI, $groupSystem], function($p) {
+		$installed_plugins = array_filter([$purePerms, $groupsAPI, $groupSystem, $rankSystem], function($p) {
 			return $p !== null;
 		});
 
 		if (count($installed_plugins) > 1) {
-			$this->getLogger()->error("Two or more of PurePerms, GroupsAPI and GroupSystem are installed. You will need one of them (but not multiple at the same time) for this plugin to work!");
+			$this->getLogger()->error("Two or more of PurePerms, GroupsAPI, GroupSystem and RankSystem are installed. You will need one of them (but not multiple at the same time) for this plugin to work!");
 			throw new DisablePluginException();
 		} else if ($purePerms !== null) {
 			$this->getServer()->getPluginManager()->registerEvents(new PurePermsListener($this, $purePerms), $this);
@@ -54,8 +59,10 @@ class Main extends PluginBase {
 			}
 		} else if ($groupSystem !== null) {
 			$this->getServer()->getPluginManager()->registerEvents(new GroupSystemListener($this, $groupSystem), $this);
+		} else if ($rankSystem !== null) {
+			$this->getServer()->getPluginManager()->registerEvents(new RankSystemListener($this, $rankSystem), $this);
 		} else {
-			$this->getLogger()->error("Neither PurePerms, nor GroupsAPI, nor GroupSystem are installed. You will need one of them (but not multiple at the same time) for this plugin to work!");
+			$this->getLogger()->error("Neither PurePerms, nor GroupsAPI, nor GroupSystem, nor RankSystem are installed. You will need one of them (but not multiple at the same time) for this plugin to work!");
 			throw new DisablePluginException();
 		}
 	}

@@ -7,12 +7,10 @@ namespace Himbeer\GroupJoin;
 use alvin0319\GroupsAPI\event\MemberLoadEvent;
 use alvin0319\GroupsAPI\group\GroupWrapper;
 use alvin0319\GroupsAPI\GroupsAPI;
-use alvin0319\GroupsAPI\user\Member;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\player\Player;
-use pocketmine\promise\Promise;
 
 class GroupsAPIListener implements Listener {
 	private Main $plugin;
