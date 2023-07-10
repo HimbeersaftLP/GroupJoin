@@ -8,7 +8,7 @@ use IvanCraft623\RankSystem\RankSystem;
 use pocketmine\plugin\DisablePluginException;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\VersionString;
-use r3pt1s\GroupSystem\GroupSystem;
+use r3pt1s\groupsystem\GroupSystem;
 
 class Main extends PluginBase {
 	public bool $hideOther;
