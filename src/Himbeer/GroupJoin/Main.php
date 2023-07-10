@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Himbeer\GroupJoin;
 
-use _64FF00\PurePerms\PurePerms;
-use alvin0319\GroupsAPI\GroupsAPI;
 use IvanCraft623\RankSystem\RankSystem;
 use pocketmine\plugin\DisablePluginException;
 use pocketmine\plugin\PluginBase;
@@ -24,45 +22,33 @@ class Main extends PluginBase {
 		$this->messages = $this->getConfig()->get("groups");
 
 		/**
-		 * @var PurePerms|null $purePerms
+		 * @var RankSystem|null $rankSystem
 		 */
-		$purePerms = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
-		/**
-		 * @var GroupsAPI|null $groupsAPI
-		 */
-		$groupsAPI = $this->getServer()->getPluginManager()->getPlugin("GroupsAPI");
+		$rankSystem = $this->getServer()->getPluginManager()->getPlugin("RankSystem");
 		/**
 		 * @var GroupSystem|null $groupSystem
 		 */
 		$groupSystem = $this->getServer()->getPluginManager()->getPlugin("GroupSystem");
-		/**
-		 * @var RankSystem|null $rankSystem
-		 */
-		$rankSystem = $this->getServer()->getPluginManager()->getPlugin("RankSystem");
 
-		$installed_plugins = array_filter([$purePerms, $groupsAPI, $groupSystem, $rankSystem], function($p) {
+		$installed_plugins = array_filter([$rankSystem, $groupSystem], function($p) {
 			return $p !== null;
 		});
 
 		if (count($installed_plugins) > 1) {
-			$this->getLogger()->error("Two or more of PurePerms, GroupsAPI, GroupSystem and RankSystem are installed. You will need one of them (but not multiple at the same time) for this plugin to work!");
+			$this->getLogger()->error("Both RankSystem and GroupSystem are installed. You will need one of them (but not multiple at the same time) for this plugin to work!");
 			throw new DisablePluginException();
-		} else if ($purePerms !== null) {
-			$this->getServer()->getPluginManager()->registerEvents(new PurePermsListener($this, $purePerms), $this);
-		} else if ($groupsAPI !== null) {
-			$groupsAPIVer = new VersionString($groupsAPI->getDescription()->getVersion());
-			if ($groupsAPIVer->getMajor() >= 2) {
-				$this->getServer()->getPluginManager()->registerEvents(new GroupsAPIListener($this, $groupsAPI), $this);
+		} else if ($groupSystem !== null) {
+			$groupSystemVer = new VersionString($groupSystem->getDescription()->getVersion());
+			if ($groupSystemVer->compare(new VersionString("3.2.3")) != 1) { // Installed version is greater than or equal to 3.2.3
+				$this->getServer()->getPluginManager()->registerEvents(new GroupSystemListener($this), $this);
 			} else {
-				$this->getLogger()->error("GroupsAPI version must be 2.0.0 or higher!");
+				$this->getLogger()->error("GroupSystem version must be 3.2.3 or higher!");
 				throw new DisablePluginException();
 			}
-		} else if ($groupSystem !== null) {
-			$this->getServer()->getPluginManager()->registerEvents(new GroupSystemListener($this, $groupSystem), $this);
 		} else if ($rankSystem !== null) {
 			$this->getServer()->getPluginManager()->registerEvents(new RankSystemListener($this, $rankSystem), $this);
 		} else {
-			$this->getLogger()->error("Neither PurePerms, nor GroupsAPI, nor GroupSystem, nor RankSystem are installed. You will need one of them (but not multiple at the same time) for this plugin to work!");
+			$this->getLogger()->error("Neither RankSystem, nor GroupSystem are installed. You will need one of them (but not multiple at the same time) for this plugin to work!");
 			throw new DisablePluginException();
 		}
 	}

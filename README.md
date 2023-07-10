@@ -10,10 +10,8 @@ A [PocketMine-MP](https://github.com/pmmp/PocketMine-MP) plugin that notifies al
 
 ### Supported Plugins
 
-- [PurePerms](https://poggit.pmmp.io/p/PurePerms/)
-- [GroupsAPI](https://poggit.pmmp.io/p/GroupsAPI/)
-- [GroupSystem](https://poggit.pmmp.io/p/GroupSystem/)
 - [RankSystem](https://poggit.pmmp.io/p/RankSystem/)
+- [GroupSystem](https://poggit.pmmp.io/p/GroupSystem/)
 
 ## Usage
 
