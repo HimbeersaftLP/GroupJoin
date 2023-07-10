@@ -8,7 +8,5 @@ author: Himbeer
 website: himbeer.me
 description: Get notified when a player from a specific PurePerms/GroupsAPI/GroupSystem/RankSystem group joins.
 softdepend:
-  - PurePerms
-  - GroupsAPI
-  - GroupSystem
   - RankSystem
+  - GroupSystem
